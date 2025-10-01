@@ -8,7 +8,13 @@ use std::process::Command;
 lazy_static::lazy_static! {
     /// LLVM version used by this version of the crate.
     static ref CRATE_VERSION: Version = {
-        Version::new(16, 0, 6) // Set to specific version like LLVM
+        let crate_version = Version::parse(env!("CARGO_PKG_VERSION"))
+            .expect("Crate version is somehow not valid semver");
+        Version {
+            major: crate_version.major / 10,
+            minor: crate_version.major % 10,
+            .. crate_version
+        }
     };
 
     /// Filesystem path to an llvm-config binary for the correct version.
